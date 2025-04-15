@@ -41,3 +41,10 @@ A React-based blog listing application that displays posts with images, titles, 
 ### 1. Clone the repository
 ```bash
 git clone https://github.com/vnray/Blog-listing.git
+
+### 2. Install dependencies
+cd Blog-listing
+npm install
+
+### 3. Run the development server
+npm run dev
