@@ -5,4 +5,5 @@ export const Store = configureStore({
   reducer: {
     blogs: blogsReducer,
   },
+
 });

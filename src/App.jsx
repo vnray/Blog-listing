@@ -1,23 +1,22 @@
-import { Provider } from "react-redux";
-import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
-import BlogList from "./pages/BlogList";
-import { Store } from "./store/Store";
-import BlogDetails from "./pages/BlogDetails";
+import React from 'react';
+import { Provider } from 'react-redux';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { Store } from './store/Store';
+import BlogList from './pages/BlogList';
+import BlogDetails from './pages/BlogDetails';
 
 function App() {
   return (
-    <>
-      <Provider store={Store}>
-        <Router>
-          <div className="app">
-            <Routes>
-              <Route path="/" element={<BlogList />} />
-              <Route path="/blog/:id" element={<BlogDetails />} />
-            </Routes>
-          </div>
-        </Router>
-      </Provider>
-    </>
+    <Provider store={Store}>
+      <Router>
+        <div className="app">
+          <Switch>
+            <Route exact path="/" component={BlogList} />
+            <Route path="/blog/:id" component={BlogDetails} />
+          </Switch>
+        </div>
+      </Router>
+    </Provider>
   );
 }
 

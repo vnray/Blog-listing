@@ -1,44 +1,57 @@
-import { useEffect } from "react";
-import { useDispatch } from "react-redux";
-import { useSelector } from "react-redux";
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import { withRouter } from "react-router-dom";
 import FetchBlogs from "../blogs/BlogAPI";
 import { allBlogs, blogStatus } from "../blogs/BlogsSlice";
-import { useParams } from "react-router-dom";
 import Spinner from "../components/Spinner";
 import { imageMap } from "../blogs/imageData";
 
-const BlogDetails = () => {
-  const { id } = useParams();
-  const dispatch = useDispatch();
-  const status = useSelector(blogStatus);
-  const blogs = useSelector(allBlogs);
-  console.log(id);
-  useEffect(() => {
-    if (status === "idle") {
-      FetchBlogs();
+class BlogDetailsClass extends Component {
+  componentDidMount() {
+    if (this.props.status === "idle") {
+      this.props.FetchBlogs();
     }
-  }, [status, dispatch]);
+  }
 
-  const blog = blogs.find((blog) => {
-    return blog.id === parseInt(id);
-  });
-  if (status === "idle") return <Spinner />;
-  if (!blog) return <div>blog post not found</div>;
+  render() {
+    const { status, blogs, match } = this.props;
+    const { id } = match.params;
+    const blog = blogs.find(blog => blog.id === parseInt(id));
 
-  const imgURL = imageMap[`${blog.id}`];
-  return (
-    <div className="blog-detail-container">
-      <div className="container">
-        <div className="blog-detail">
-          <h2>{blog.title}</h2>
-          <div className="blog-image">
-            <img src={imgURL} alt="blog-image" />
+    if (status === "idle") return <Spinner />;
+    if (!blog) return <div>Blog post not found</div>;
+
+    const imgURL = imageMap[`${blog.id}`];
+
+    return (
+      <div className="blog-detail-container">
+        <div className="container">
+          <div className="blog-detail">
+            <h2>{blog.title}</h2>
+            <div className="blog-image">
+              <img src={imgURL} alt="blog-image" />
+            </div>
+            <p>{blog.body}</p>
           </div>
-          <p>{blog.body}</p>
         </div>
       </div>
-    </div>
-  );
+    );
+  }
+}
+
+// Map Redux state to props
+const mapStateToProps = (state) => ({
+  blogs: allBlogs(state),
+  status: blogStatus(state)
+});
+
+// Map dispatch to props
+const mapDispatchToProps = {
+  FetchBlogs
 };
 
-export default BlogDetails;
+// withRouter gives access to route params via this.props.match
+// connect links the component to Redux
+export default withRouter(
+  connect(mapStateToProps, mapDispatchToProps)(BlogDetailsClass)
+);
